@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const logger = require('morgan');
+const cors = require('cors');
 
 const indexRouter = require('./routes/index.routes');
 const pasteRouter = require('./routes/paste.routes');
@@ -9,6 +10,7 @@ const { registerPastesCleanerJob } = require('./services/pastesCleaner');
 
 const app = express();
 
+app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
