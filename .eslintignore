@@ -1,1 +1,3 @@
 bin/www
+models/index.js
+migrations
