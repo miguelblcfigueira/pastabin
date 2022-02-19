@@ -1,10 +1,9 @@
 const express = require('express');
+const pasteController = require('../controllers/paste.controllers');
 
 const router = express.Router();
 
-/* GET paste. */
-router.get('/', (req, res) => {
-  res.send('Test');
-});
+/* POST new paste. */
+router.post('/', pasteController.createPaste);
 
 module.exports = router;
