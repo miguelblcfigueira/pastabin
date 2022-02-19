@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www",
+    "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www",
     "lint": "eslint .",
     "prepare": "husky install",
     "test": "jest --silent"
@@ -35,5 +36,8 @@
     "**/*.js": [
       "eslint --fix"
     ]
+  },
+  "engines": {
+    "node": "12.22"
   }
 }
