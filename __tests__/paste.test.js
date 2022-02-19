@@ -1,10 +1,60 @@
 const request = require('supertest');
 const app = require('../app');
-const paste = require('../models/paste');
+const { generatePasteId } = require('../lib/pasteIdGenerator');
+
+jest.mock('../models');
+const { Paste } = require('../models');
 
 const PASTE = 'This is some text';
+const EXISTING_ID = generatePasteId();
+const ABSENT_ID = generatePasteId();
 
-jest.mock('../models/paste');
+beforeEach(() => {
+  Paste.__reset();
+  Paste.__add({
+    id: EXISTING_ID,
+    data: PASTE,
+    expiresAt: new Date(Date.now() + 15 * 60 * 1000),
+  });
+});
+
+afterEach(() => {
+  jest.useRealTimers();
+});
+
+describe('GET /Paste', () => {
+  it('should get the data for the Paste', async () => {
+    const response = await request(app)
+      .get(`/${EXISTING_ID}`);
+    expect(response.statusCode).toBe(200);
+    expect(response.type).toBe('application/json');
+    expect(response.body.id).toBe(EXISTING_ID);
+    expect(response.body.data).toMatch(EXISTING_ID);
+    expect(response.body.expiresAt.getTime())
+      .toBeLessThan(new Date(Date.now() + 15 * 60 * 1000).getTime());
+  });
+
+  it('should return 404 if the Paste does not exist', async () => {
+    const response = await request(app)
+      .get(`/${ABSENT_ID}`);
+    expect(response.statusCode).toBe(404);
+  });
+
+  it('should return 404 if the Paste has expired', async () => {
+    jest.useFakeTimers();
+    jest.spyOn(global, 'setInterval');
+
+    let response = await request(app)
+      .get(`/${EXISTING_ID}`);
+    expect(response.statusCode).toBe(200);
+
+    jest.advanceTimersByTime(15 * 60 * 1000);
+
+    response = await request(app)
+      .get(`/${EXISTING_ID}`);
+    expect(response.statusCode).toBe(404);
+  });
+});
 
 describe('POST /paste', () => {
   it('should create a post and return an id to access it', async () => {
@@ -15,7 +65,7 @@ describe('POST /paste', () => {
     expect(response.type).toBe('application/json');
     expect(response.body.id).toMatch(/^[A-Za-z0-9]*$/);
 
-    const storedPaste = paste.findByPk(response.body.id);
+    const storedPaste = Paste.findByPk(response.body.id);
     expect(storedPaste.id).toBe(response.body.id);
     expect(storedPaste.data).toBe(PASTE);
     expect(storedPaste.expiresAt.getTime())

@@ -12,12 +12,18 @@ const create = (paste) => {
 const findByPk = (id) => (Pastes[id]);
 
 /** Reset Pastes. */
-const reset = () => {
+const __reset = () => {
   Pastes = {};
 };
 
+/** Add Paste. */
+const __add = (paste) => {
+  create(paste);
+};
+
 Paste.create = create;
-Paste.reset = reset;
+Paste.__reset = __reset;
+Paste.__add = __add;
 Paste.findByPk = findByPk;
 
 module.exports = Paste;
