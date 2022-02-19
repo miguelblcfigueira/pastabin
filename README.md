@@ -42,7 +42,7 @@ These instructions get the project running on local machine for development and 
 
 ### Database 
 
-- MySQL v8 or PostgreSQL
+- MySQL v8
 
 # Running locally
 
