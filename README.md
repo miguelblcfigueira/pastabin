@@ -72,3 +72,8 @@ npm start
 ```
 npm test
 ```
+
+# Live
+
+The API is deployed at:
+https://api-pastabin.herokuapp.com/
