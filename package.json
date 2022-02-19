@@ -6,7 +6,7 @@
     "start": "nodemon ./bin/www",
     "lint": "eslint .",
     "prepare": "husky install",
-    "test": "jest"
+    "test": "jest --silent"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
