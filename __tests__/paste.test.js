@@ -29,7 +29,7 @@ describe('GET /Paste', () => {
     expect(response.statusCode).toBe(200);
     expect(response.type).toBe('application/json');
     expect(response.body.id).toBe(EXISTING_ID);
-    expect(response.body.data).toMatch(EXISTING_ID);
+    expect(response.body.data).toBe(PASTE);
     expect(response.body.expiresAt.getTime())
       .toBeLessThan(new Date(Date.now() + 15 * 60 * 1000).getTime());
   });
