@@ -4,6 +4,7 @@ const { generatePasteId } = require('../lib/pasteIdGenerator');
 
 jest.mock('../models');
 const { Paste } = require('../models');
+const { unregisterPastesCleanerJob } = require('../services/pastesCleaner');
 
 const PASTE = 'This is some text';
 const EXISTING_ID = generatePasteId();
@@ -22,6 +23,10 @@ afterEach(() => {
   jest.useRealTimers();
 });
 
+afterAll(() => {
+  unregisterPastesCleanerJob();
+});
+
 describe('GET /Paste', () => {
   it('should get the data for the Paste', async () => {
     const response = await request(app)
@@ -30,7 +35,7 @@ describe('GET /Paste', () => {
     expect(response.type).toBe('application/json');
     expect(response.body.id).toBe(EXISTING_ID);
     expect(response.body.data).toBe(PASTE);
-    expect(response.body.expiresAt.getTime())
+    expect(new Date(response.body.expiresAt).getTime())
       .toBeLessThan(new Date(Date.now() + 15 * 60 * 1000).getTime());
   });
 
@@ -48,7 +53,7 @@ describe('GET /Paste', () => {
       .get(`/${EXISTING_ID}`);
     expect(response.statusCode).toBe(200);
 
-    jest.advanceTimersByTime(15 * 60 * 1000);
+    jest.advanceTimersByTime(15 * 60 * 1000 + 1);
 
     response = await request(app)
       .get(`/${EXISTING_ID}`);
