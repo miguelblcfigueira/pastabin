@@ -1,7 +1,7 @@
 const { Op } = require('sequelize');
 const { Paste } = require('../models');
 
-const CLEANING_PASTES_JOBS_INTERVAL = 1 * 60 * 1000;
+const CLEANING_PASTES_JOBS_INTERVAL = 60 * 60 * 1000;
 
 let pastesCleanerJob;
 exports.registerPastesCleanerJob = () => {
